@@ -1,52 +1,62 @@
 namespace MauiAppMinhasCompras.Views;
 
+using System.Collections.ObjectModel;
 using MauiAppMinhasCompras.Helpers;
 using MauiAppMinhasCompras.Models;
 
 public partial class ListaProduto : ContentPage
 {
-    private readonly SQLiteDatabaseHelper _db;
+    ObservableCollection<Produto> lista = new ObservableCollection<Produto>();
 
     public ListaProduto()
     {
         InitializeComponent();
-        string dbPath = Path.Combine(FileSystem.AppDataDirectory, "teste.db3");
-        _db = new SQLiteDatabaseHelper(dbPath);
+
+        lst_produtos.ItemsSource = lista;
     }
 
-    private async void OnInserir(object sender, EventArgs e)
+    protected async override void OnAppearing()
     {
-        await _db.Insert(new Produto { Descricao = "Banana", Quantidade = 5, Preco = 2.5 });
-        ResultadoLabel.Text = "Produto inserido.";
+        List<Produto> tmp = await App.Db.GetAll();
+
+        tmp.ForEach(i => lista.Add(i));
     }
 
-    private async void OnListar(object sender, EventArgs e)
+    private void ToolbarItem_Clicked(object sender, EventArgs e)
     {
-        var produtos = await _db.GetAll();
-        ResultadoLabel.Text = string.Join("\n", produtos.Select(p => $"{p.Id} - {p.Descricao}"));
-    }
-
-    private async void OnAtualizar(object sender, EventArgs e)
-    {
-        var produtos = await _db.GetAll();
-        if (produtos.Any())
+        try
         {
-            var p = produtos.First();
-            p.Descricao += " (Editado)";
-            await _db.Update(p);
-            ResultadoLabel.Text = "Primeiro produto atualizado.";
+            Navigation.PushAsync(new Views.NovoProduto());
+
         }
-        else ResultadoLabel.Text = "Nenhum produto para atualizar.";
+        catch (Exception ex)
+        {
+            DisplayAlert("Ops", ex.Message, "OK");
+        }
     }
 
-    private async void OnExcluir(object sender, EventArgs e)
+    private async void txt_search_TextChanged(object sender, TextChangedEventArgs e)
     {
-        var produtos = await _db.GetAll();
-        if (produtos.Any())
-        {
-            await _db.Delete(produtos.First().Id);
-            ResultadoLabel.Text = "Primeiro produto excluído.";
-        }
-        else ResultadoLabel.Text = "Nenhum produto para excluir.";
+        string q = e.NewTextValue;
+
+        lista.Clear();
+
+        List<Produto> tmp = await App.Db.Search(q);
+
+        tmp.ForEach(i => lista.Add(i));
+    }
+
+    private void ToolbarItem_Clicked_1(object sender, EventArgs e)
+    {
+        double soma = lista.Sum(i => i.Total);
+
+        string msg = $"O total é {soma:C}";
+
+        DisplayAlert("Total dos Produtos", msg, "OK");
+    }
+
+    private void MenuItem_Clicked(object sender, EventArgs e)
+    {
+
     }
 }
