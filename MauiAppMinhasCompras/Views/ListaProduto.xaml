@@ -5,7 +5,7 @@
              Title="Minhas Compras">
     
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Somar"/>
+        <ToolbarItem Text="Somar" Clicked="ToolbarItem_Clicked_1"/>
         <ToolbarItem Text="Adicionar" Clicked="ToolbarItem_Clicked"/>
     </ContentPage.ToolbarItems>
 
@@ -28,7 +28,7 @@
                 <DataTemplate>
                     <ViewCell>
                         <ViewCell.ContextActions>
-                            <MenuItem Text="Remover" Clicked="MenuItem_Clicked" />
+                            <MenuItem Text="Remover" Clicked="MenuItem_Clicked" CommandParameter="{Binding .}" IsDestructive="True" />
                         </ViewCell.ContextActions>
                         <Grid ColumnDefinitions="*, *, *, *, *, *">
                             <Label Grid.Column="0" Text="{Binding Id}" />
