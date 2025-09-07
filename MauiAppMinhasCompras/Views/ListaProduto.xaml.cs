@@ -57,23 +57,40 @@ public partial class ListaProduto : ContentPage
 
     private async void MenuItem_Clicked(object sender, EventArgs e)
     {
-        var menuItem = sender as MenuItem;
-        var produto = menuItem?.CommandParameter as Produto;
-
-        if (produto == null)
-            return;
-
-        bool confirmar = await DisplayAlert("Confirmação",
-            $"Deseja realmente excluir o produto {produto.Descricao}?",
-            "Sim", "Não");
-
-        if (confirmar)
+        try
         {
-            await App.Db.Delete(produto.Id);
+            MenuItem selecinado = sender as MenuItem;
 
-            lista.Remove(produto);
+            Produto p = selecinado.BindingContext as Produto;
 
-            await DisplayAlert("Sucesso", "Produto excluído!", "OK");
+            bool confirm = await DisplayAlert("Tem Certeza?", $"Remover {p.Descricao}?", "Sim", "Não");
+
+            if (confirm)
+            {
+                await App.Db.Delete(p.Id);
+                lista.Remove(p);
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Ops", ex.Message, "OK");
+        }
+    }
+
+    private void lst_produtos_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        try
+        {
+            Produto p = e.SelectedItem as Produto;
+
+            Navigation.PushAsync(new Views.EditarProduto
+            {
+                BindingContext = p,
+            });
+        }
+        catch (Exception ex)
+        {
+            DisplayAlert("Ops", ex.Message, "OK");
         }
     }
 }
