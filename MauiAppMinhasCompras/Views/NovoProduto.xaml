@@ -17,5 +17,8 @@
         <Label Text="Preço Unit"/>
         <Entry x:Name="txt_preco" Keyboard="Numeric"/>
 
+        <Label Text="Data da compra"/>
+        <DatePicker x:Name="dp_data" />
+
     </VerticalStackLayout>
 </ContentPage>

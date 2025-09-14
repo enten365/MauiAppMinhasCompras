@@ -1,0 +1,47 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiAppMinhasCompras.Views.Relatorio"
+             Title="Relatório de Compras">
+    
+    <VerticalStackLayout Padding="12" Spacing="10">
+
+        <HorizontalStackLayout Spacing="8">
+            <Label Text="Início:" VerticalOptions="Center"/>
+            <DatePicker x:Name="dp_inicio" WidthRequest="120"/>
+
+            <Label Text="Fim:" VerticalOptions="Center"/>
+            <DatePicker x:Name="dp_fim" WidthRequest="120"/>
+
+            <Button Text="Filtrar"
+                    Clicked="Filtrar_Clicked"
+                    VerticalOptions="Center"/>
+        </HorizontalStackLayout>
+
+        <ListView x:Name="lst_relatorio"
+                  ItemSelected="lst_produtos_ItemSelected">
+            <ListView.Header>
+                <Grid ColumnDefinitions="*, *, *">
+                    <Label Grid.Column="0" Text="ID" />
+                    <Label Grid.Column="1" Text="Descrição" />
+                    <Label Grid.Column="2" Text="Data de Cadastro" />
+                </Grid>
+            </ListView.Header>
+            
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Text="Excluir" Clicked="MenuItem_Clicked" CommandParameter="{Binding .}" IsDestructive="True" />
+                        </ViewCell.ContextActions>
+                        <Grid ColumnDefinitions="*, *, *">
+                            <Label Grid.Column="0" Text="{Binding Id}" />
+                            <Label Grid.Column="1" Text="{Binding Descricao}" />
+                            <Label Grid.Column="2" Text="{Binding DataCadastro, StringFormat='Data: {0:dd/MM/yyyy}'}"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </VerticalStackLayout>
+</ContentPage>

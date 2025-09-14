@@ -1,4 +1,5 @@
 ﻿using MauiAppMinhasCompras.Helpers;
+using System.Globalization;
 
 namespace MauiAppMinhasCompras
 {
@@ -7,8 +8,18 @@ namespace MauiAppMinhasCompras
         public App()
         {
             InitializeComponent();
+            var cultura = new CultureInfo("pt-BR");
+            Thread.CurrentThread.CurrentCulture = cultura;
+            Thread.CurrentThread.CurrentUICulture= cultura;
 
             MainPage = new NavigationPage(new Views.ListaProduto());
+        }
+
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
+            var window = base.CreateWindow(activationState);
+            window.Title = "Minhas Compras";
+            return window;
         }
 
         static SQLiteDatabaseHelper _db;
